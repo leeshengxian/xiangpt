@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>简单问答应用程序</title>
+  <style>
+    input[type=text] {
+      width: 70%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 16px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    #answer {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <input type="text" id="inputText" placeholder="输入问题" /><br/>
+  <button onclick="generateText()">生成</button>
+
+  <div id="answer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const apiKey = 'YOUR_API_KEY_HERE';
+
+    function generateText() {
+      const question = document.getElementById('inputText').value;
+
+      axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
+        prompt: question,
+        max_tokens: 1500,
+        n: 1,
+        stop: '\n',
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+      }).then((response) => {
+        const answer = response.data.choices[0].text;
+        document.getElementById('answer').innerHTML = answer;
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+  </script>
+</body>
+</html>
